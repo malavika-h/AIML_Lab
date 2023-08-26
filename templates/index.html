@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>News App</title>
+</head>
+
+<body>
+    <div class="header">
+        <a href="/">NEWS APP</a>
+        <form class="search-bar" action="{% url 'query' %}" method="GET">
+            <input id="query" name="query" type="search" placeholder="Search by keyword..." />
+            <!-- <input id="btn" type="submit"/> -->
+        </form>
+        <ul class='cat-list'>
+            <li class="ls-it"><a href="/business">Business</a></li>
+            <li class="ls-it"><a href="/entertainment">Entertainment</a></li>
+            <li class="ls-it"><a href="/health">Health</a></li>
+            <li class="ls-it"><a href="/science">Science</a></li>
+            <li class="ls-it"><a href="/sports">Sports</a></li>
+            <li class="ls-it"><a href="/technology">Technology</a></li>
+        </ul>
+
+        <div class="menu">
+            <i class="fa fa-bars" id="menu-btn"></i>
+            <div class="popup" id="menu-popup">
+                <div class="close-btn" id="menu-close-btn">
+                    <i class="fa fa-times"></i>
+                </div>
+                <ul class='rs-cat-list'>
+                    <li class="ls-it"><a href="/business">Business</a></li>
+                    <li class="ls-it"><a href="/entertainment">Entertainment</a></li>
+                    <li class="ls-it"><a href="/health">Health</a></li>
+                    <li class="ls-it"><a href="/science">Science</a></li>
+                    <li class="ls-it"><a href="/sports">Sports</a></li>
+                    <li class="ls-it"><a href="/technology">Technology</a></li>
+                    <li class="ls-it"><a href="/general">General</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="cou-container">
+        <div class="hd">
+            <h3>Filter news by Region</h3>
+            <span id="expand"><i class="fa fa-chevron-down"></i></span>
+            <span id="shrink" style="display: none;"><i class="fa fa-chevron-up"></i></span>
+        </div>
+
+        <div class="name-container" id="country-names">
+            {% for id, country in cou %}
+            <a href="/country/{{id}}">{{country}}</a>
+            {% endfor %}
+        </div>
+
+    </div>
+    <div class="container">
+        {% for r in res.results %}
+        <div class="news-card" id="news-card">
+            <div class="img-container">
+                <img src="{{r.image_url}}" alt="news" />
+            </div>
+            <div class="subpart">
+                <h3 data-news="{{ r|safe }}" onclick="readMore('{{ r.title|escapejs }}', '{{ r.image_url|escapejs }}', '{{ r.content|escapejs }}', '{{ r.creator.0|escapejs }}', '{{ r.pubDate|escapejs }}')">{{ r.title }}</h3>
+                <p>{{r.content}}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div> 
+
+    <div id="modal">
+        <div class="close-btn" id="close-btn">
+            <i class="fa fa-times"></i>
+        </div>
+        <div id="modal-box">
+            <div class="news-data">
+                <div class="news-img">
+                    <img src="" id="news-img" />
+                </div>
+                <h2 id="news-title">What Square’s smashing earnings tell us about consumer bitcoin demand</h2>
+                <div class="news-details">
+                    <div class="author" id="news-author">Author: <strong>Alex Wilhelm</strong></div>
+                    <div class="published-at">Date: <strong id="news-date"></strong></div>
+                </div>
+                <div class="news-content" id="news-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/json5@^2.0.0/dist/index.min.js"></script>
+
+    <script type="text/javascript">
+
+        const menuClose = document.getElementById('menu-close-btn')
+        const menuOpen = document.getElementById('menu-btn')
+        const menu = document.getElementById('menu-popup')
+
+        menuOpen.addEventListener('click',() => {
+            menu.style.display = 'block'
+        })
+
+        menuClose.addEventListener('click',() => {
+            menu.style.display = 'none'
+        })
+
+
+        const expand = document.getElementById('expand')
+        const shrink = document.getElementById('shrink')
+        const countries = document.getElementById('country-names')
+
+        shrink.addEventListener('click', () => {
+            countries.style.display = 'none'
+            shrink.style.display = 'none'
+            expand.style.display = 'flex'
+        })
+
+        expand.addEventListener('click', () => {
+            countries.style.display = 'grid'
+            expand.style.display = 'none'
+            shrink.style.display = 'flex'
+        })
+
+        const modal = document.getElementById('modal')
+        const close = document.getElementById('close-btn')
+
+        const content = document.getElementById('news-content')
+        const image = document.getElementById('news-img')
+        const title = document.getElementById('news-title')
+        const author = document.getElementById('news-author')
+        const date = document.getElementById('news-date')
+
+        const readMore = (t, i, c, cr, pb) => {
+            modal.style.display = 'flex'
+            content.innerText = c
+            image.src = i
+            title.innerText = t
+            author.innerText = cr
+            date.innerText = pb.slice(0, 10)
+        } 
+        
+        close.addEventListener('click', () => {
+            modal.style.display = 'none'
+        })
+
+    </script>
+
+</body>
+
+</html>
