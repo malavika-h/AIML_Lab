@@ -1,0 +1,9 @@
+dj_database_url==0.5.0
+Django==4.0.4
+django_heroku==0.3.1
+goose3==3.1.17
+newsdataapi==0.1.6
+newspaper3k==0.2.8
+Requests==2.31.0
+torch==2.0.1
+transformers==4.30.2
